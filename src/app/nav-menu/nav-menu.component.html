@@ -3,7 +3,7 @@
 <mdb-navbar SideClass="navbar navbar-expand-lg navbar-dark cyan" [containerInside]="false">
 
     <!-- Navbar brand -->
-    <mdb-navbar-brand><a class="navbar-brand" href="#">Online-Chat</a></mdb-navbar-brand>
+    <mdb-navbar-brand><a class="navbar-brand" routerLink="/home">Online-Chat</a></mdb-navbar-brand>
   
     <!-- Collapsible content -->
     <links>
@@ -20,10 +20,10 @@
         <!-- Dropdown -->
         <li class="nav-item dropdown" dropdown>
           <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
-            <mdb-icon fas icon="user"></mdb-icon> Profile<span class="caret"></span></a>
+            <mdb-icon fas icon="user"></mdb-icon> {{currentUser.fullName}}<span class="caret"></span></a>
           <div *dropdownMenu class="dropdown-menu dropdown-menu-right dropdown dropdown-primary" role="menu">
-            <a class="dropdown-item waves-light" mdbWavesEffect href="#">Мой профиль</a>
-            <a class="dropdown-item waves-light" *ngIf="currentUser.Role == 'Admin'" mdbWavesEffect routerLink="/admin-panel">Админ панель</a>
+            <a class="dropdown-item waves-light" mdbWavesEffect>Мой профиль</a>
+            <a class="dropdown-item waves-light" *ngIf="CheckAccess('Admin')" mdbWavesEffect routerLink="/admin-panel">Админ панель</a>
             <button class="dropdown-item waves-light" mdbWavesEffect (click)="LogOut()" >Выйти</button>
           </div>
         </li>
