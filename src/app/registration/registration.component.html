@@ -1,4 +1,4 @@
-<form [formGroup]="service.formModel" class="mt-5 text-center border border-light p-5" (submit)="onSubmit()">
+<form [formGroup]="formModel" class="mt-5 text-center border border-light p-5" (submit)="onSubmit()">
 
     <p class="h4 mb-4">Регистрация</p>
 
@@ -6,14 +6,14 @@
         <div class="col">
             <input type="text" formControlName="Login" id="Login" class="form-control" required placeholder="Логин">
             <label class="text-danger"
-                *ngIf="service.formModel.get('Login').touched && service.formModel.get('Login').errors?.required">Вы не
+                *ngIf="formModel.get('Login').touched && formModel.get('Login').errors?.required">Вы не
                 ввели логин!</label>
         </div>
         <div class="col">
             <input type="text" id="FirstName" formControlName="FirstName" class="form-control" required
                 placeholder="Имя">
             <label class="text-danger"
-                *ngIf="service.formModel.get('FirstName').touched && service.formModel.get('FirstName').errors?.required">Вы
+                *ngIf="formModel.get('FirstName').touched && formModel.get('FirstName').errors?.required">Вы
                 не ввели имя!</label>
 
         </div>
@@ -21,7 +21,7 @@
             <input type="text" id="LastName" formControlName="LastName" class="form-control" required
                 placeholder="Фамилия">
             <label class="text-danger"
-                *ngIf="service.formModel.get('LastName').touched && service.formModel.get('LastName').errors?.required">Вы
+                *ngIf="formModel.get('LastName').touched && formModel.get('LastName').errors?.required">Вы
                 не введи фамилию!</label>
 
         </div>
@@ -29,7 +29,7 @@
 
     <input type="email" id="email" formControlName="Email" class="form-control mb-4" placeholder="E-mail">
     <label class="text-danger"
-        *ngIf="service.formModel.get('Email').touched && service.formModel.get('Email').errors?.email">Вы ввели неверную
+        *ngIf="formModel.get('Email').touched && formModel.get('Email').errors?.email">Вы ввели неверную
         почту!</label>
 
 
@@ -37,23 +37,23 @@
         <input type="password" id="Password" formControlName="Password" class="form-control" placeholder="Пароль"
             aria-describedby="defaultRegisterFormPasswordHelpBlock">
         <label class="text-danger"
-            *ngIf="service.formModel.get('Passwords.Password').touched && service.formModel.get('Passwords.Password').errors?.required">Вы
+            *ngIf="formModel.get('Passwords.Password').touched && formModel.get('Passwords.Password').errors?.required">Вы
             не ввели Пароль!</label>
         <label class="text-danger"
-            *ngIf="service.formModel.get('Passwords.Password').touched && service.formModel.get('Passwords.Password').errors?.minlength">Ваш
+            *ngIf="formModel.get('Passwords.Password').touched && formModel.get('Passwords.Password').errors?.minlength">Ваш
             пароль слишком короткий!</label>
         <br>
         <input type="password" id="ConfirmPassword" formControlName="ConfirmPassword" class="form-control"
             placeholder="Пароль" aria-describedby="defaultRegisterFormPasswordHelpBlock">
         <label class="text-danger"
-            *ngIf="service.formModel.get('Passwords.ConfirmPassword').touched && service.formModel.get('Passwords.ConfirmPassword').errors?.required">Вы
+            *ngIf="formModel.get('Passwords.ConfirmPassword').touched && formModel.get('Passwords.ConfirmPassword').errors?.required">Вы
             не ввели Пароль!</label>
         <label class="text-danger"
-            *ngIf="service.formModel.get('Passwords.ConfirmPassword').touched && service.formModel.get('Passwords.ConfirmPassword').errors?.passwordMismatch">Ваши
+            *ngIf="formModel.get('Passwords.ConfirmPassword').touched && formModel.get('Passwords.ConfirmPassword').errors?.passwordMismatch">Ваши
             пароли не совпадают!</label>
 
     </div>
-    <button mdbBtn color="info" block="true" class="my-4" [disabled]="!service.formModel.valid"
+    <button mdbBtn color="info" block="true" class="my-4" [disabled]="!formModel.valid"
         type="submit">Регистрация</button>
     <a mdbBtn type="button" color="default" routerLink="/login" block=" true" mdbWavesEffect>Войти</a>
 </form>
