@@ -44,7 +44,7 @@ import { AdminPanelComponent } from './admin-panel/admin-panel.component';
       { path: '', component: LoginComponent, pathMatch: 'full' },
       {path:'login',component: LoginComponent},
       { path: 'registration', component: RegistrationComponent},
-      {path:'home',component: HomeComponent, canActivate:[AuthGuard],data:{permittedRoles:['User']}},
+      {path:'home',component: HomeComponent, canActivate:[AuthGuard]},
       {path:'admin-panel', component:AdminPanelComponent,canActivate:[AuthGuard],data:{permittedRoles:['Admin']}},
       { path: '**', component: LoginComponent }
      ]),
