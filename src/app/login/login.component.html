@@ -1,23 +1,17 @@
-<!-- Default form login -->
-<form class="mt-5 text-center border border-light p-5">
+<form #form='ngForm' autocomplete="off" class="mt-5 text-center border border-light p-5" (submit)="onSubmit(form)">
 
-    <p class="h4 mb-4">Войти</p>
-  
-    <!-- Email -->
-    <input type="email" id="defaultLoginFormEmail" class="form-control mb-4" placeholder="E-mail">
-  
-    <!-- Password -->
-    <input type="password" id="defaultLoginFormPassword" class="form-control mb-4" placeholder="Пароль">
-  
-  
-    <!-- Sign in button -->
-    <button mdbBtn color="info" block="true" class="my-4" type="submit">Войти</button>
-  
-    <!-- Register -->
+    <p class="h4 mb-4">Авторизация</p>
+
+    <input type="text" #login="ngModel" name="Login" ngModel required class="form-control mb-4"
+        placeholder="Логин">
+
+    <input type="password" ngModel name="Password" #pass="ngModel" required
+        class="form-control mb-4" placeholder="Пароль">
+
+    <button mdbBtn color="info" [disabled]='!form.valid' block="true" class="my-4" type="submit">Войти</button>
+
     <p>Не зарегистрированы?
-      <a href="/registration">Зарегистрироваться</a>
+        <br>
+        <a routerLink="/registration">Зарегистрироваться</a>
     </p>
-
-  
-  </form>
-  <!-- Default form login -->
+</form>

@@ -17,12 +17,16 @@ import { AppComponent } from "./app.component";
 import { NavMenuComponent } from "./nav-menu/nav-menu.component";
 import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
-import {HttpClientModule} from '@angular/common/http'
+import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http'
 import { UserService } from './shared/user.service';
+import { HomeComponent } from './home/home.component';
+import { AuthGuard } from './Auth/auth.guard';
+import { AuthInterceptor } from './Auth/auth.interceptor';
+import { AdminPanelComponent } from './admin-panel/admin-panel.component';
 
 
 @NgModule({
-  declarations: [AppComponent, NavMenuComponent, LoginComponent, RegistrationComponent],
+  declarations: [AppComponent, NavMenuComponent, LoginComponent, RegistrationComponent, HomeComponent, AdminPanelComponent],
   imports: [
     BrowserModule,
     CheckboxModule,
@@ -38,11 +42,19 @@ import { UserService } from './shared/user.service';
     MDBBootstrapModule.forRoot(),
     RouterModule.forRoot([
       { path: '', component: LoginComponent, pathMatch: 'full' },
+      {path:'login',component: LoginComponent},
       { path: 'registration', component: RegistrationComponent},
-    ]),
+      {path:'home',component: HomeComponent, canActivate:[AuthGuard],data:{permittedRoles:['User']}},
+      {path:'admin-panel', component:AdminPanelComponent,canActivate:[AuthGuard],data:{permittedRoles:['Admin']}},
+      { path: '**', component: LoginComponent }
+     ]),
 
   ],
-  providers: [UserService],
+  providers: [UserService,{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi:true
+  }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

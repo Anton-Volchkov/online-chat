@@ -5,35 +5,55 @@
     <div class="form-row mb-4">
         <div class="col">
             <input type="text" formControlName="Login" id="Login" class="form-control" required placeholder="Логин">
-            <label class="text-danger" *ngIf="service.formModel.get('Login').touched && service.formModel.get('Login').errors?.required">Вы не ввели логин!</label>
+            <label class="text-danger"
+                *ngIf="service.formModel.get('Login').touched && service.formModel.get('Login').errors?.required">Вы не
+                ввели логин!</label>
         </div>
         <div class="col">
-            <input type="text" id="FirstName" formControlName="FirstName" class="form-control" required placeholder="Имя">
-            <label class="text-danger" *ngIf="service.formModel.get('FirstName').touched && service.formModel.get('FirstName').errors?.required">Вы не ввели имя!</label>
-       
+            <input type="text" id="FirstName" formControlName="FirstName" class="form-control" required
+                placeholder="Имя">
+            <label class="text-danger"
+                *ngIf="service.formModel.get('FirstName').touched && service.formModel.get('FirstName').errors?.required">Вы
+                не ввели имя!</label>
+
         </div>
         <div class="col">
-            <input type="text" id="LastName" formControlName="LastName" class="form-control" required placeholder="Фамилия">
-            <label class="text-danger" *ngIf="service.formModel.get('LastName').touched && service.formModel.get('LastName').errors?.required">Вы не введи фамилию!</label>
-       
+            <input type="text" id="LastName" formControlName="LastName" class="form-control" required
+                placeholder="Фамилия">
+            <label class="text-danger"
+                *ngIf="service.formModel.get('LastName').touched && service.formModel.get('LastName').errors?.required">Вы
+                не введи фамилию!</label>
+
         </div>
     </div>
- 
+
     <input type="email" id="email" formControlName="Email" class="form-control mb-4" placeholder="E-mail">
-    <label class="text-danger" *ngIf="service.formModel.get('Email').touched && service.formModel.get('Email').errors?.email">Вы ввели неверную почту!</label>
-       
+    <label class="text-danger"
+        *ngIf="service.formModel.get('Email').touched && service.formModel.get('Email').errors?.email">Вы ввели неверную
+        почту!</label>
+
 
     <div formGroupName="Passwords">
         <input type="password" id="Password" formControlName="Password" class="form-control" placeholder="Пароль"
             aria-describedby="defaultRegisterFormPasswordHelpBlock">
-            <label class="text-danger" *ngIf="service.formModel.get('Passwords.Password').touched && service.formModel.get('Passwords.Password').errors?.required">Вы не ввели Пароль!</label>
-            <label class="text-danger" *ngIf="service.formModel.get('Passwords.Password').touched && service.formModel.get('Passwords.Password').errors?.minlength">Ваш пароль слишком короткий!</label>
-       <br>
+        <label class="text-danger"
+            *ngIf="service.formModel.get('Passwords.Password').touched && service.formModel.get('Passwords.Password').errors?.required">Вы
+            не ввели Пароль!</label>
+        <label class="text-danger"
+            *ngIf="service.formModel.get('Passwords.Password').touched && service.formModel.get('Passwords.Password').errors?.minlength">Ваш
+            пароль слишком короткий!</label>
+        <br>
         <input type="password" id="ConfirmPassword" formControlName="ConfirmPassword" class="form-control"
             placeholder="Пароль" aria-describedby="defaultRegisterFormPasswordHelpBlock">
-            <label class="text-danger" *ngIf="service.formModel.get('Passwords.ConfirmPassword').touched && service.formModel.get('Passwords.ConfirmPassword').errors?.required">Вы не ввели Пароль!</label>
-            <label class="text-danger" *ngIf="service.formModel.get('Passwords.ConfirmPassword').touched && service.formModel.get('Passwords.ConfirmPassword').errors?.passwordMismatch">Ваши пароли не совпадают!</label>
-       
+        <label class="text-danger"
+            *ngIf="service.formModel.get('Passwords.ConfirmPassword').touched && service.formModel.get('Passwords.ConfirmPassword').errors?.required">Вы
+            не ввели Пароль!</label>
+        <label class="text-danger"
+            *ngIf="service.formModel.get('Passwords.ConfirmPassword').touched && service.formModel.get('Passwords.ConfirmPassword').errors?.passwordMismatch">Ваши
+            пароли не совпадают!</label>
+
     </div>
-    <button mdbBtn color="info" block="true" class="my-4" [disabled]="!service.formModel.valid" type="submit">Регистрация</button>
+    <button mdbBtn color="info" block="true" class="my-4" [disabled]="!service.formModel.valid"
+        type="submit">Регистрация</button>
+    <a mdbBtn type="button" color="default" routerLink="/login" block=" true" mdbWavesEffect>Войти</a>
 </form>

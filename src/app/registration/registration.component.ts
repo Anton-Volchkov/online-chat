@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { UserService } from "../shared/user.service";
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -8,9 +9,14 @@ import { UserService } from "../shared/user.service";
   styleUrls: ["./registration.component.scss"],
 })
 export class RegistrationComponent implements OnInit {
-  constructor(public service: UserService) {}
+  constructor(public service: UserService, private router: Router) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if(localStorage.getItem('token') != null)
+    {
+      this.router.navigateByUrl("/home")
+    }
+  }
   onSubmit() {
     this.service.Register().subscribe(
       (res: any) => {

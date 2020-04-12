@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { Validators } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: "root",
@@ -9,7 +10,7 @@ import { HttpClient } from "@angular/common/http";
 export class UserService {
   public formModel: FormGroup;
   private BaseURI : string = "https://localhost:44367"
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
     this.formModel = this.fb.group({
       Login: ["", Validators.required],
       FirstName: ["", Validators.required],
@@ -48,5 +49,29 @@ export class UserService {
     };
 
    return this.http.post(this.BaseURI+"/User/Register",body);
+  }
+
+  Login(data) {
+    
+    return this.http.post(this.BaseURI+"/User/Login",data);
+  }
+
+  roleMatch(allowedRoles: Array<string>)
+  {
+    if(localStorage.getItem('token') == null)
+    {
+      this.router.navigateByUrl("/login");
+    }
+
+    var payload = JSON.parse(window.atob(localStorage.getItem('token').split('.')[1]));
+    var userRole = payload.role;
+
+    var res = allowedRoles.find(x => x == userRole);
+  
+    if(res == null)
+    {
+      return false;
+    }
+    return true;
   }
 }
