@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
-import { UserProfile } from '../Abstraction/UserProfile';
+import { UserProfile } from '../Models/UserProfile';
 
 @Injectable({
   providedIn: "root",

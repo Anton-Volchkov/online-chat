@@ -11,6 +11,10 @@ export class HomeComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    window.setInterval(function() {
+      var elem = document.getElementById('data');
+      elem.scrollTop = elem.scrollHeight;
+      }, 5000);
   }
 
   

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { UserService } from "../shared/user.service";
-import { UserProfile } from "../Abstraction/UserProfile";
+import { UserProfile } from "../Models/UserProfile";
 
 @Component({
   selector: "app-nav-menu",
