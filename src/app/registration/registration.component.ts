@@ -17,6 +17,7 @@ export class RegistrationComponent implements OnInit {
       FirstName: ["", Validators.required],
       LastName: ["", Validators.required],
       Email: ["", Validators.email],
+      ImagePath:[""],
       Passwords: this.fb.group(
         {
           Password: ["", [Validators.required, Validators.minLength(6)]],
@@ -34,6 +35,7 @@ export class RegistrationComponent implements OnInit {
     }
   }
   onSubmit() {
+    
     this.service.Register(this.formModel).subscribe(
       (res: any) => {
         if (res.succeeded) {

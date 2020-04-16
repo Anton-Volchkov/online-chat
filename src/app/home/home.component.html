@@ -4,28 +4,13 @@
     <div class="col-4">
         <mdb-card class="friend-list scrollbar-near-moon">
             <mdb-card-body>
-                
-                <div class="chip selectedd col-12 selected">
-                    <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-6.jpg" alt="Contact Person"> Выбранный пользователь
-                </div>
-
-                <div class="chip col-12">
-                    <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-6.jpg" alt="Contact Person"> John Doe
-                </div>
-
-                <div class="chip col-12">
-                    <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-6.jpg" alt="Contact Person"> John Doe
-                </div>
-
-                <div class="chip col-12">
-                    <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-6.jpg" alt="Contact Person"> John Doe
-                </div>
-
-                <div class="chip col-12">
-                    <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-6.jpg" alt="Contact Person"> John Doe
-                </div>
-
-                
+            
+                <div *ngFor="let user of Users" (click)="setRecipient(user.userID)" class="chip col-12 selected"
+                [ngClass]="{selected:user.userID == recipientUser.userID}"
+                >
+                    <img [src]="user.imagePath" alt="Contact Person"> 
+                    {{user.fullName}}
+                </div>    
 
             </mdb-card-body>
         </mdb-card>
@@ -33,55 +18,37 @@
     </div>
 
     <div class="col-8">
-        <div class="">
-            <mdb-card class="messages scrollbar-dusty-grass" id="data">
-                <mdb-card-body>
-                    <div class="alert alert-success offset-5 col-7" role="alert">
+        <div>
+            <mdb-card id="data" class="messages scrollbar-dusty-grass">
+                <mdb-card-body class="force-overflow" >
+                    <div *ngIf="(!recipientUser.userID) "class="text-center">
+                        <h2>Выберите Чат</h2>
+                        <br>
+                        <img src="../../assets/Images/chatImage.png" *ngIf="true" style="width: 40vh;" alt="">
+                    </div>
+                  
+                    <div *ngFor="let msg of Messages" class="alert alert-success col-7"  role="alert"
+                    [ngClass]="{'offset-5':msg.senderID == currentUser.userID}"
+                    >
                        
                         <p style="font-size: 0.8em;">
-                            тут текст сообщения
+                            {{msg.textMessage}}
                         </p>
                         <hr>
-                        <small style="font-size: 0.7em;"><em>Тут дата будет</em></small>
-                    </div>
-
-                    <div class="alert alert-success offset-5 col-7" role="alert">
-                       
-                        <p style="font-size: 0.8em;">
-                            тут текст сообщения
-                        </p>
-                        <hr>
-                        <small style="font-size: 0.7em;"><em>Тут дата будет</em></small>
-                    </div>
-
-
-                    <div class="alert alert-success  col-7" role="alert">
-                    
-                        <p style="font-size: 0.8em;">
-                            тут текст сообщения
-                        </p>
-                        <hr>
-                        <small style="font-size: 0.7em;"><em>Тут дата будет</em></small>
-                    </div>
-
-                    <div class="alert alert-success offset-5 col-7" role="alert">
-                      
-                        <p style="font-size: 0.8em;">
-                            тут текст сообщения
-                        </p>
-                        <hr>
-                        <small style="font-size: 0.7em;"><em>Тут дата будет</em></small>
+                        <small style="font-size: 0.7em;"><em>{{msg.fullNameSender}}, {{msg.dispatchTime}}</em></small>
                     </div>
 
                 </mdb-card-body>
             </mdb-card>
 
+           <form #form ="ngForm" (ngSubmit)="sendMessage(form)">
             <div class="md-form">
-                <textarea type="text" id="form7" class="md-textarea md-textarea-auto form-control" mdbInput></textarea>
+                <textarea name="message" (keydown.enter)="sendMessage(form)" [disabled]="(!recipientUser.userID)" ngModel required type="text" id="areaMessage" class="md-textarea md-textarea-auto form-control" mdbInput></textarea>
                 <label for="form7">Сообщение</label>
             </div>
-            <button mdbBtn type="button" color="default" block="true" mdbWavesEffect>Отправить сообщение</button>
+            <button mdbBtn type="submit" color="default" [disabled]="(!recipientUser.userID) || !form.valid" block="true" mdbWavesEffect>Отправить сообщение</button>
 
+           </form>
         </div>
     </div>
 </div>

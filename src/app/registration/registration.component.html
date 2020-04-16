@@ -32,6 +32,9 @@
         *ngIf="formModel.get('Email').touched && formModel.get('Email').errors?.email">Вы ввели неверную
         почту!</label>
 
+        
+        <input type="text"  formControlName="ImagePath" class="form-control mb-4" placeholder="Ссылка на фото в формате URL (Данное поле не обязательно)">
+        
 
     <div formGroupName="Passwords">
         <input type="password" id="Password" formControlName="Password" class="form-control" placeholder="Пароль"

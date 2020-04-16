@@ -6,6 +6,7 @@ export class UserProfile
   lastName:string;
   fullName:string;
   email:string;
+  imagePath:string;
   login:string;
   roles:Array<string>;
   dateRegister:string;

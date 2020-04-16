@@ -1,18 +1,15 @@
-import { Injectable } from "@angular/core";
+import { Injectable,Inject } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
-import { UserProfile } from '../Models/UserProfile';
+import { UserProfile } from "../Models/UserProfile";
 
 @Injectable({
   providedIn: "root",
 })
 export class UserService {
-  private BaseURI: string = "https://localhost:44367";
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) {}
+ 
+  constructor(private http: HttpClient, private router: Router, @Inject("SERVER_URL") private serverUrl: string) {}
 
   ComparePasswords(fb: FormGroup) {
     let confirmPass = fb.get("ConfirmPassword");
@@ -28,33 +25,51 @@ export class UserService {
   }
 
   Register(formModel: FormGroup) {
+    var imgPath =
+      formModel.value.ImagePath.trim() == ''
+        ? "https://upload.wikimedia.org/wikipedia/commons/2/2f/No-photo-m.png"
+        : formModel.value.ImagePath;
+  
     var body = {
       FirstName: formModel.value.FirstName,
       LastName: formModel.value.LastName,
       Login: formModel.value.Login,
       Email: formModel.value.Email,
+      ImagePath: imgPath,
       Password: formModel.value.Passwords.Password,
     };
 
-    return this.http.post(this.BaseURI + "/User/Register", body);
+    console.log(body);
+ 
+
+    return this.http.post(this.serverUrl + "/User/Register", body);
   }
 
   Login(data) {
-    return this.http.post(this.BaseURI + "/User/Login", data);
+    return this.http.post(this.serverUrl + "/User/Login", data);
   }
 
-  GetUserInfo(userID:string)
-  {
-    return this.http.get<UserProfile>(this.BaseURI+'/User/GetUserInfo/'+ userID);
+  GetUserInfo(userID: string) {
+    return this.http.get<UserProfile>(
+      this.serverUrl + "/User/GetUserInfo/" + userID
+    );
   }
-  
+
+  GetUserID(): string {
+    var payload = JSON.parse(
+      window.atob(localStorage.getItem("token").split(".")[1])
+    );
+
+    return payload.UserID;
+  }
+
   roleMatch(allowedRoles: Array<string>) {
     if (localStorage.getItem("token") == null) {
       this.router.navigateByUrl("/login");
     }
 
     var userRole = this.getUserRoles();
-   
+
     var isMatch: boolean = false;
 
     userRole.forEach((element) => {
@@ -68,17 +83,17 @@ export class UserService {
     return isMatch;
   }
 
-  getUserRoles() : Array<string>
-  {
+  getUserRoles(): Array<string> {
     if (localStorage.getItem("token") == null) {
       this.router.navigateByUrl("/login");
     }
 
-    var payload = JSON.parse(window.atob(localStorage.getItem('token').split('.')[1]));
+    var payload = JSON.parse(
+      window.atob(localStorage.getItem("token").split(".")[1])
+    );
     var userRoles = payload.role as Array<string>;
-   
-    if(typeof(userRoles) == 'string')
-    {
+
+    if (typeof userRoles == "string") {
       userRoles = new Array<string>(userRoles);
     }
 

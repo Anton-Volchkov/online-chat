@@ -10,26 +10,27 @@ import { UserProfile } from "../Models/UserProfile";
 })
 export class NavMenuComponent implements OnInit {
   public currentUser: UserProfile = new UserProfile();
-
+  private baseToken: string;
   constructor(private service: UserService, private router: Router) {
-    if (localStorage.getItem("token") == null) {
-      this.router.navigateByUrl("/login");
-    }
+    this.baseToken = localStorage.getItem("token");
   }
 
   ngOnInit(): void {
     var payload = JSON.parse(
       window.atob(localStorage.getItem("token").split(".")[1])
     );
-    this.currentUser.roles = this.service.getUserRoles();
-   
+
+    setInterval(() => {
+      if (!localStorage.getItem("token")) {
+        document.location.href = "/login";
+      } else if (localStorage.getItem("token") != this.baseToken) {
+        localStorage.removeItem("token");
+        document.location.href = "/login";
+      }
+    }, 10);
+
     this.service.GetUserInfo(payload.UserID).subscribe((response) => {
-      this.currentUser.firstName = response.firstName;
-      this.currentUser.lastName = response.lastName;
-      this.currentUser.login = response.login;
-      this.currentUser.email = response.email;
-      this.currentUser.dateRegister = response.dateRegister;
-      this.currentUser.fullName = `${response.firstName} ${response.lastName}`;
+      this.currentUser = response;
     });
   }
   CheckAccess(nameRole: string): boolean {
@@ -37,6 +38,6 @@ export class NavMenuComponent implements OnInit {
   }
   LogOut() {
     localStorage.removeItem("token");
-    this.router.navigateByUrl("");
+    document.location.href = "/login";
   }
 }
