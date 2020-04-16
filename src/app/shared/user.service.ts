@@ -3,6 +3,7 @@ import { FormGroup } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { UserProfile } from "../Models/UserProfile";
+import { ChatUser } from '../Models/ChatUser';
 
 @Injectable({
   providedIn: "root",
@@ -38,10 +39,7 @@ export class UserService {
       ImagePath: imgPath,
       Password: formModel.value.Passwords.Password,
     };
-
-    console.log(body);
  
-
     return this.http.post(this.serverUrl + "/User/Register", body);
   }
 
@@ -54,6 +52,14 @@ export class UserService {
       this.serverUrl + "/User/GetUserInfo/" + userID
     );
   }
+
+  GetAllUsersInfo() {
+    return this.http.get<ChatUser[]>(
+      this.serverUrl + "/User/GetAllUsersInfo"
+    );
+  }
+
+
 
   GetUserID(): string {
     var payload = JSON.parse(

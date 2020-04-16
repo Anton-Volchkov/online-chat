@@ -48,8 +48,14 @@ export class RegistrationComponent implements OnInit {
                alert("Это имя уже занятно!");
                 this.formModel.reset();
                 break;
-              default:
 
+              case "DuplicateEmail":
+                alert("Эта почта занята!");
+               break;
+
+              default:
+                 alert("При регистрации что-то пошло не так!");
+                 this.formModel.reset();
                 break;
             }
           });

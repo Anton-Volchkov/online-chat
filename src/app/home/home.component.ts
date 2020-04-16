@@ -20,10 +20,12 @@ import { HttpClient } from "@angular/common/http";
 })
 export class HomeComponent implements OnInit {
   public currentUser: UserProfile;
-  public Users: ChatUser[] = [];
+  public onlineUsers: ChatUser[] = [];
+  public allUsers: ChatUser[] = [];
   public Messages: Message[] = [];
   public recipientUser: ChatUser;
   public _hubConnection: HubConnection;
+  public onlyOnlineUser: boolean = true;
 
   constructor(
     private service: UserService,
@@ -44,11 +46,7 @@ export class HomeComponent implements OnInit {
       this.startConnection();
     });
 
-    setTimeout(() => {
-      let elem = document.getElementById("data");
-
-      elem.scrollTop = elem.scrollHeight;
-    }, 1);
+    this.service.GetAllUsersInfo().subscribe(data => this.allUsers = data );
   }
 
   private createConnection() {
@@ -89,7 +87,7 @@ export class HomeComponent implements OnInit {
         }
       }
 
-      this.Users = data;
+      this.onlineUsers = data;
     });
 
     this._hubConnection.on("NewMessage", (data: Message) => {
@@ -109,10 +107,8 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  setRecipient(recipientID: string) {
-    const user = this.Users.find((x) => x.userID == recipientID);
-
-    if (user != null) {
+  setRecipient(user: ChatUser) {
+   
       this.recipientUser = user;
       this.Messages = [];
       this.http
@@ -127,7 +123,7 @@ export class HomeComponent implements OnInit {
             elem.scrollTop = elem.scrollHeight;
           }, 1);
         });
-    }
+    
   }
 
   sendMessage(form: NgForm) {
@@ -174,5 +170,14 @@ export class HomeComponent implements OnInit {
     var minutes =
       date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
     return `${day}.${month}.${date.getFullYear()} ${hours}:${minutes}`;
+  }
+
+  ChangeList(needtList:string)
+  {
+    if((needtList == "Online" && this.onlyOnlineUser) || (needtList == "All" && this.onlyOnlineUser == false))
+    return;
+
+    this.onlyOnlineUser =!this.onlyOnlineUser;
+   
   }
 }
