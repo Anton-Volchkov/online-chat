@@ -11,6 +11,7 @@ import { UserProfile } from "../Models/UserProfile";
 import { UserService } from "../shared/user.service";
 import { Message } from "../Models/Message";
 import { NgForm } from "@angular/forms";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "app-home",
@@ -24,7 +25,11 @@ export class HomeComponent implements OnInit {
   public recipientUser: ChatUser;
   public _hubConnection: HubConnection;
 
-  constructor(private service: UserService,@Inject("SERVER_URL") private serverUrl: string) {}
+  constructor(
+    private service: UserService,
+    @Inject("SERVER_URL") private serverUrl: string,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.recipientUser = new ChatUser();
@@ -39,19 +44,17 @@ export class HomeComponent implements OnInit {
       this.startConnection();
     });
 
-    setTimeout(()=>{
+    setTimeout(() => {
       let elem = document.getElementById("data");
 
-    elem.scrollTop = elem.scrollHeight;
-    },1);
-
-
+      elem.scrollTop = elem.scrollHeight;
+    }, 1);
   }
 
   private createConnection() {
     // https://localhost:44358/server  https://mutual-like-server.herokuapp.com/server
     this._hubConnection = new HubConnectionBuilder()
-      .withUrl(this.serverUrl+"/chat", {
+      .withUrl(this.serverUrl + "/chat", {
         skipNegotiation: true,
         transport: signalR.HttpTransportType.WebSockets,
         accessTokenFactory: () => localStorage.getItem("token"),
@@ -77,9 +80,8 @@ export class HomeComponent implements OnInit {
 
   private registerOnServerEvents(): void {
     this._hubConnection.on("OnlineUsers", (data: ChatUser[]) => {
-     
       const elem = data.find((x) => x.userID == this.currentUser.userID);
-     
+
       if (elem != null) {
         const index = data.indexOf(elem);
         if (index > -1) {
@@ -99,12 +101,11 @@ export class HomeComponent implements OnInit {
 
       this.Messages.push(data);
 
-      setTimeout(()=>{
+      setTimeout(() => {
         let elem = document.getElementById("data");
-  
-      elem.scrollTop = elem.scrollHeight;
-      },1);
-  
+
+        elem.scrollTop = elem.scrollHeight;
+      }, 1);
     });
   }
 
@@ -114,13 +115,24 @@ export class HomeComponent implements OnInit {
     if (user != null) {
       this.recipientUser = user;
       this.Messages = [];
+      this.http
+        .get<Message[]>(
+          this.serverUrl + "/Message/GetChatHistory/" + this.recipientUser.userID
+        )
+        .subscribe((data) => {
+          this.Messages = data; 
+          setTimeout(() => {
+            let elem = document.getElementById("data");
+    
+            elem.scrollTop = elem.scrollHeight;
+          }, 1);
+        });
     }
   }
 
   sendMessage(form: NgForm) {
     var formValue = form.value;
     if (formValue.message.trim() == "") {
-
       form.reset();
       return;
     }
@@ -138,19 +150,17 @@ export class HomeComponent implements OnInit {
 
     this.Messages.push(msg);
 
-   
     this._hubConnection.invoke(
       "SendMessage",
       this.recipientUser.userID,
       msg.textMessage
     );
 
-    setTimeout(()=>{
+    setTimeout(() => {
       let elem = document.getElementById("data");
 
-    elem.scrollTop = elem.scrollHeight;
-    },1);
-
+      elem.scrollTop = elem.scrollHeight;
+    }, 1);
   }
 
   getDate(): string {
