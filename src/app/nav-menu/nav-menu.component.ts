@@ -27,7 +27,7 @@ export class NavMenuComponent implements OnInit {
         localStorage.removeItem("token");
         document.location.href = "/login";
       }
-    }, 10);
+    }, 1000);
 
     this.service.GetUserInfo(payload.UserID).subscribe((response) => {
       this.currentUser = response;

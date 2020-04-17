@@ -4,31 +4,40 @@
     <div class="col-4">
         <mdb-card class="friend-list scrollbar-near-moon">
             <div class="btn-group">
-                <button mdbBtn color="primary" [gradient]="onlyOnlineUser?'peach':'aqua'" (click)="ChangeList('Online')"  mdbWavesEffect>
-                 Онлайн
+                <button mdbBtn color="primary" class="hoverable" [gradient]="onlyOnlineUser?'peach':'aqua'"
+                    (click)="ChangeList('Online')" mdbWavesEffect>
+                    Онлайн
                 </button>
-                <button mdbBtn color="primary"  [gradient]="onlyOnlineUser?'aqua':'peach'" (click)="ChangeList('All')"  mdbWavesEffect>
-                 Все пользователи
+                <button mdbBtn color="primary" class="hoverable" [gradient]="onlyOnlineUser?'aqua':'peach'"
+                    (click)="ChangeList('All')" mdbWavesEffect>
+                    Все пользователи
                 </button>
-              </div>
+            </div>
+
+            <input mdbInput #inputUserName id="FilterUserName" placeholder="Поиск по имени..."
+                (input)="filterUsers(inputUserName.value)" type="text" class="form-control">
+
+
             <mdb-card-body>
-            
-               <div *ngIf="onlyOnlineUser; else elseBlock">
-                <div  *ngFor="let user of onlineUsers" (click)="setRecipient(user)" class="chip col-12 selected"
-                [ngClass]="{selected:user.userID == recipientUser.userID}"
-                >
-                    <img [src]="user.imagePath" alt="Contact Person"> 
-                    {{user.fullName}}
-                </div>  
-               </div>  
-               <ng-template #elseBlock>
-                <div  *ngFor="let user of allUsers" (click)="setRecipient(user)" class="chip col-12 selected"
-                [ngClass]="{selected:user.userID == recipientUser.userID}"
-                >
-                    <img [src]="user.imagePath" alt="Contact Person"> 
-                    {{user.fullName}}
-                </div>  
-               </ng-template>
+
+                <div *ngIf="onlyOnlineUser; else elseBlock">
+                    <p class="text-center" *ngIf="(currentOnlineUsers.length == 0)">
+                        Никого не найдено!
+                    </p>
+                    <div *ngFor="let user of currentOnlineUsers" (click)="setRecipient(user)" class="chip col-12"
+                        [ngClass]="{selected:user.userID == recipientUser.userID}">
+                        <img [src]="user.imagePath" alt="Contact Person">
+                        {{user.fullName}}
+                    </div>
+                </div>
+                <ng-template #elseBlock>
+                    <p class="text-center" *ngIf="(currentAllUsers.length == 0)">Никого не найдено!</p>
+                    <div *ngFor="let user of currentAllUsers" (click)="setRecipient(user)" class="chip col-12"
+                        [ngClass]="{selected:user.userID == recipientUser.userID}">
+                        <img [src]="user.imagePath" alt="Contact Person">
+                        {{user.fullName}}
+                    </div>
+                </ng-template>
 
             </mdb-card-body>
         </mdb-card>
@@ -38,17 +47,16 @@
     <div class="col-8">
         <div>
             <mdb-card id="data" class="messages scrollbar-dusty-grass">
-                <mdb-card-body class="force-overflow" >
-                    <div *ngIf="(!recipientUser.userID) "class="text-center">
+                <mdb-card-body class="force-overflow">
+                    <div *ngIf="(!recipientUser.userID) " class="text-center">
                         <h2>Выберите Чат</h2>
                         <br>
                         <img src="../../assets/Images/chatImage.png" *ngIf="true" style="width: 40vh;" alt="">
                     </div>
-                  
-                    <div *ngFor="let msg of Messages" class="alert alert-success col-7"  role="alert"
-                    [ngClass]="{'offset-5':msg.senderID == currentUser.userID}"
-                    >
-                       
+
+                    <div *ngFor="let msg of Messages" class="alert alert-success col-7" role="alert"
+                        [ngClass]="{'offset-5':msg.senderID == currentUser.userID}">
+
                         <p style="font-size: 0.8em;">
                             {{msg.textMessage}}
                         </p>
@@ -59,14 +67,17 @@
                 </mdb-card-body>
             </mdb-card>
 
-           <form #form ="ngForm" (ngSubmit)="sendMessage(form)">
-            <div class="md-form">
-                <textarea name="message" (keydown.enter)="sendMessage(form)" [disabled]="(!recipientUser.userID)" ngModel required type="text" id="areaMessage" class="md-textarea md-textarea-auto form-control" mdbInput></textarea>
-                <label for="form7">Сообщение</label>
-            </div>
-            <button mdbBtn type="submit" color="default" [disabled]="(!recipientUser.userID) || !form.valid" block="true" mdbWavesEffect>Отправить сообщение</button>
+            <form #form="ngForm" (ngSubmit)="sendMessage(form)">
+                <div class="md-form">
+                    <textarea name="message" (keydown.enter)="sendMessage(form)" [disabled]="(!recipientUser.userID)"
+                        ngModel required type="text" id="areaMessage" class="md-textarea md-textarea-auto form-control"
+                        mdbInput></textarea>
+                    <label for="form7">Сообщение</label>
+                </div>
+                <button mdbBtn type="submit" color="default" [disabled]="(!recipientUser.userID) || !form.valid"
+                    block="true" mdbWavesEffect>Отправить сообщение</button>
 
-           </form>
+            </form>
         </div>
     </div>
 </div>

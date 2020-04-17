@@ -27,6 +27,12 @@ export class RegistrationComponent implements OnInit {
       ),
     });
   }
+  
+  CheckOnWhiteSpace(event:any)
+  {
+    if(event.key == ' ')
+     return false;
+  }
 
   ngOnInit(): void {
     if(localStorage.getItem('token') != null)
@@ -36,7 +42,7 @@ export class RegistrationComponent implements OnInit {
   }
   onSubmit() {
     
-    this.service.Register(this.formModel).subscribe(
+    this.service.Register(this.formModel)?.subscribe(
       (res: any) => {
         if (res.succeeded) {
           this.formModel.reset();
@@ -54,7 +60,7 @@ export class RegistrationComponent implements OnInit {
                break;
 
               default:
-                 alert("При регистрации что-то пошло не так!");
+                 alert("При регистрации что-то пошло не так! Возможно вы ввели некорректные данные.");
                  this.formModel.reset();
                 break;
             }

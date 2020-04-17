@@ -1,16 +1,19 @@
-import { Injectable,Inject } from "@angular/core";
+import { Injectable, Inject } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { UserProfile } from "../Models/UserProfile";
-import { ChatUser } from '../Models/ChatUser';
+import { ChatUser } from "../Models/ChatUser";
 
 @Injectable({
   providedIn: "root",
 })
 export class UserService {
- 
-  constructor(private http: HttpClient, private router: Router, @Inject("SERVER_URL") private serverUrl: string) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    @Inject("SERVER_URL") private serverUrl: string
+  ) {}
 
   ComparePasswords(fb: FormGroup) {
     let confirmPass = fb.get("ConfirmPassword");
@@ -26,20 +29,27 @@ export class UserService {
   }
 
   Register(formModel: FormGroup) {
-    var imgPath =
-      formModel.value.ImagePath.trim() == ''
-        ? "https://upload.wikimedia.org/wikipedia/commons/2/2f/No-photo-m.png"
-        : formModel.value.ImagePath;
-  
+    var values = formModel.value;
+    var imgPath: string =
+      "https://upload.wikimedia.org/wikipedia/commons/2/2f/No-photo-m.png";
+
+    if (!values.ImagePath) {
+      values.ImagePath = imgPath;
+    } else {
+      values.ImagePath.trim() == ''
+        ? imgPath
+        : values.ImagePath;
+    }
+   
     var body = {
-      FirstName: formModel.value.FirstName,
-      LastName: formModel.value.LastName,
-      Login: formModel.value.Login,
-      Email: formModel.value.Email,
-      ImagePath: imgPath,
-      Password: formModel.value.Passwords.Password,
+      FirstName: values.FirstName,
+      LastName: values.LastName,
+      Login: values.Login,
+      Email: values.Email,
+      ImagePath: values.ImagePath,
+      Password: values.Passwords.Password,
     };
- 
+
     return this.http.post(this.serverUrl + "/User/Register", body);
   }
 
@@ -54,12 +64,8 @@ export class UserService {
   }
 
   GetAllUsersInfo() {
-    return this.http.get<ChatUser[]>(
-      this.serverUrl + "/User/GetAllUsersInfo"
-    );
+    return this.http.get<ChatUser[]>(this.serverUrl + "/User/GetAllUsersInfo");
   }
-
-
 
   GetUserID(): string {
     var payload = JSON.parse(

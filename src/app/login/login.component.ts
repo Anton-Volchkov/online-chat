@@ -19,6 +19,12 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  CheckOnWhiteSpace(event:any)
+  {
+    if(event.key == ' ')
+     return false;
+  }
+
   onSubmit(form:NgForm)
   {
     this.service.Login(form.value).subscribe((res:any)=>{

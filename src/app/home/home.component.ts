@@ -12,6 +12,7 @@ import { UserService } from "../shared/user.service";
 import { Message } from "../Models/Message";
 import { NgForm } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
+import { $ } from "protractor";
 
 @Component({
   selector: "app-home",
@@ -20,8 +21,13 @@ import { HttpClient } from "@angular/common/http";
 })
 export class HomeComponent implements OnInit {
   public currentUser: UserProfile;
-  public onlineUsers: ChatUser[] = [];
-  public allUsers: ChatUser[] = [];
+
+  private onlineUsers: ChatUser[] = [];
+  public currentOnlineUsers: ChatUser[] = [];
+
+  private allUsers: ChatUser[] = [];
+  public currentAllUsers: ChatUser[] = [];
+
   public Messages: Message[] = [];
   public recipientUser: ChatUser;
   public _hubConnection: HubConnection;
@@ -46,7 +52,10 @@ export class HomeComponent implements OnInit {
       this.startConnection();
     });
 
-    this.service.GetAllUsersInfo().subscribe(data => this.allUsers = data );
+    this.service.GetAllUsersInfo().subscribe((data) => {
+      this.allUsers = data;
+      this.currentAllUsers = this.allUsers;
+    });
   }
 
   private createConnection() {
@@ -88,6 +97,13 @@ export class HomeComponent implements OnInit {
       }
 
       this.onlineUsers = data;
+      this.currentOnlineUsers = this.onlineUsers;
+
+      var filter = (<HTMLInputElement>(
+        document.getElementById("FilterUserName")
+      )).value.trim();
+
+      if (filter != "" && this.onlyOnlineUser) this.filterUsers(filter);
     });
 
     this._hubConnection.on("NewMessage", (data: Message) => {
@@ -108,22 +124,21 @@ export class HomeComponent implements OnInit {
   }
 
   setRecipient(user: ChatUser) {
-   
-      this.recipientUser = user;
-      this.Messages = [];
-      this.http
-        .get<Message[]>(
-          this.serverUrl + "/Message/GetChatHistory/" + this.recipientUser.userID
-        )
-        .subscribe((data) => {
-          this.Messages = data; 
-          setTimeout(() => {
-            let elem = document.getElementById("data");
-    
-            elem.scrollTop = elem.scrollHeight;
-          }, 1);
-        });
-    
+    if(this.recipientUser == user) return;
+    this.recipientUser = user;
+    this.Messages = [];
+    this.http
+      .get<Message[]>(
+        this.serverUrl + "/Message/GetChatHistory/" + this.recipientUser.userID
+      )
+      .subscribe((data) => {
+        this.Messages = data;
+        setTimeout(() => {
+          let elem = document.getElementById("data");
+
+          elem.scrollTop = elem.scrollHeight;
+        }, 1);
+      });
   }
 
   sendMessage(form: NgForm) {
@@ -172,12 +187,39 @@ export class HomeComponent implements OnInit {
     return `${day}.${month}.${date.getFullYear()} ${hours}:${minutes}`;
   }
 
-  ChangeList(needtList:string)
-  {
-    if((needtList == "Online" && this.onlyOnlineUser) || (needtList == "All" && this.onlyOnlineUser == false))
-    return;
+  ChangeList(needtList: string) {
+    if (
+      (needtList == "Online" && this.onlyOnlineUser) ||
+      (needtList == "All" && this.onlyOnlineUser == false)
+    )
+      return;
 
-    this.onlyOnlineUser =!this.onlyOnlineUser;
-   
+    this.onlyOnlineUser = !this.onlyOnlineUser;
+
+    var filter = (<HTMLInputElement>(
+      document.getElementById("FilterUserName")
+    )).value.trim();
+
+    if (filter != "") this.filterUsers(filter);
+
+  }
+
+  filterUsers(filterValue: string) {
+    var userName = filterValue.toLowerCase().trim();
+    if (userName == "") {
+      this.currentOnlineUsers = this.onlineUsers;
+      this.currentAllUsers = this.allUsers;
+      return;
+    }
+
+    if (this.onlyOnlineUser && this.onlineUsers.length > 0) {
+      this.currentOnlineUsers = this.onlineUsers.filter(
+        (x) => x.fullName.toLowerCase() == userName
+      );
+    } else if(!this.onlyOnlineUser && this.allUsers.length > 0)  {
+      this.currentAllUsers = this.allUsers.filter(
+        (x) => x.fullName.toLowerCase() == userName
+      );
+    }
   }
 }

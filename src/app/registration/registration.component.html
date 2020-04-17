@@ -4,13 +4,13 @@
 
     <div class="form-row mb-4">
         <div class="col">
-            <input type="text" formControlName="Login" id="Login" class="form-control" required placeholder="Логин">
+            <input type="text" (keypress)="CheckOnWhiteSpace($event)" formControlName="Login" id="Login" class="form-control" required placeholder="Логин">
             <label class="text-danger"
                 *ngIf="formModel.get('Login').touched && formModel.get('Login').errors?.required">Вы не
                 ввели логин!</label>
         </div>
         <div class="col">
-            <input type="text" id="FirstName" formControlName="FirstName" class="form-control" required
+            <input type="text" (keypress)="CheckOnWhiteSpace($event)" id="FirstName" formControlName="FirstName" class="form-control" required
                 placeholder="Имя">
             <label class="text-danger"
                 *ngIf="formModel.get('FirstName').touched && formModel.get('FirstName').errors?.required">Вы
@@ -18,7 +18,7 @@
 
         </div>
         <div class="col">
-            <input type="text" id="LastName" formControlName="LastName" class="form-control" required
+            <input type="text" id="LastName" (keypress)="CheckOnWhiteSpace($event)" formControlName="LastName" class="form-control" required
                 placeholder="Фамилия">
             <label class="text-danger"
                 *ngIf="formModel.get('LastName').touched && formModel.get('LastName').errors?.required">Вы
@@ -27,17 +27,17 @@
         </div>
     </div>
 
-    <input type="email" id="email" formControlName="Email" class="form-control mb-4" placeholder="E-mail">
+    <input type="email" (keypress)="CheckOnWhiteSpace($event)" id="email" formControlName="Email" class="form-control mb-4" placeholder="E-mail">
     <label class="text-danger"
         *ngIf="formModel.get('Email').touched && formModel.get('Email').errors?.email">Вы ввели неверную
         почту!</label>
 
         
-        <input type="text"  formControlName="ImagePath" class="form-control mb-4" placeholder="Ссылка на фото в формате URL (Данное поле не обязательно)">
+        <input type="text" (keypress)="CheckOnWhiteSpace($event)" formControlName="ImagePath" class="form-control mb-4" placeholder="Ссылка на фото в формате URL (Данное поле не обязательно)">
         
 
     <div formGroupName="Passwords">
-        <input type="password" id="Password" formControlName="Password" class="form-control" placeholder="Пароль"
+        <input type="password" (keypress)="CheckOnWhiteSpace($event)" id="Password"  formControlName="Password" class="form-control" placeholder="Пароль"
             aria-describedby="defaultRegisterFormPasswordHelpBlock">
         <label class="text-danger"
             *ngIf="formModel.get('Passwords.Password').touched && formModel.get('Passwords.Password').errors?.required">Вы
@@ -46,7 +46,7 @@
             *ngIf="formModel.get('Passwords.Password').touched && formModel.get('Passwords.Password').errors?.minlength">Ваш
             пароль слишком короткий!</label>
         <br>
-        <input type="password" id="ConfirmPassword" formControlName="ConfirmPassword" class="form-control"
+        <input type="password" (keypress)="CheckOnWhiteSpace($event)" id="ConfirmPassword" formControlName="ConfirmPassword" class="form-control"
             placeholder="Пароль" aria-describedby="defaultRegisterFormPasswordHelpBlock">
         <label class="text-danger"
             *ngIf="formModel.get('Passwords.ConfirmPassword').touched && formModel.get('Passwords.ConfirmPassword').errors?.required">Вы
