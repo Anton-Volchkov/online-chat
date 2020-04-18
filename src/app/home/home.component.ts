@@ -12,7 +12,7 @@ import { UserService } from "../shared/user.service";
 import { Message } from "../Models/Message";
 import { NgForm } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
-import { $ } from "protractor";
+
 
 @Component({
   selector: "app-home",
@@ -88,7 +88,6 @@ export class HomeComponent implements OnInit {
   private registerOnServerEvents(): void {
     this._hubConnection.on("OnlineUsers", (data: ChatUser[]) => {
       const elem = data.find((x) => x.userID == this.currentUser.userID);
-
       if (elem != null) {
         const index = data.indexOf(elem);
         if (index > -1) {

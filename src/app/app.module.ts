@@ -24,10 +24,15 @@ import { AuthGuard } from './Auth/auth.guard';
 import { AuthInterceptor } from './Auth/auth.interceptor';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+ 
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [AppComponent, NavMenuComponent, LoginComponent, RegistrationComponent, HomeComponent, AdminPanelComponent],
   imports: [
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
     BrowserModule,
     CheckboxModule,
     WavesModule,
