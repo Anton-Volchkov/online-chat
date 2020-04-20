@@ -68,9 +68,7 @@ export class UserService {
   }
 
   GetUserID(): string {
-    var payload = JSON.parse(
-      window.atob(localStorage.getItem("token").split(".")[1])
-    );
+    var payload = this.getPayload();
 
     return payload.UserID;
   }
@@ -100,9 +98,7 @@ export class UserService {
       this.router.navigateByUrl("/login");
     }
 
-    var payload = JSON.parse(
-      window.atob(localStorage.getItem("token").split(".")[1])
-    );
+    var payload = this.getPayload();
     var userRoles = payload.role as Array<string>;
 
     if (typeof userRoles == "string") {
@@ -111,4 +107,20 @@ export class UserService {
 
     return userRoles;
   }
+
+  getPayload()
+  {
+    try{
+      var payload = JSON.parse(
+        window.atob(localStorage.getItem("token").split(".")[1])
+      );
+      return payload;
+    }
+    catch(error)
+    {
+      localStorage.removeItem('token');
+      this.router.navigateByUrl('/login');
+    }
+  }
+
 }

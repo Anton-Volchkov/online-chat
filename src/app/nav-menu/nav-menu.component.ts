@@ -12,14 +12,13 @@ export class NavMenuComponent implements OnInit {
   public currentUser: UserProfile = new UserProfile();
   private baseToken: string;
   constructor(private service: UserService, private router: Router) {
-    this.baseToken = localStorage.getItem("token");
+   
   }
 
   ngOnInit(): void {
-    var payload = JSON.parse(
-      window.atob(localStorage.getItem("token").split(".")[1])
-    );
-
+    var payload = this.service.getPayload();
+    this.baseToken = localStorage.getItem("token");
+    
     setInterval(() => {
       if (!localStorage.getItem("token")) {
         document.location.href = "/login";

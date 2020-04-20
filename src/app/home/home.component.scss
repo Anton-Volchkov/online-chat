@@ -54,12 +54,14 @@
   overflow-y: scroll;
   height: 82vh;
   max-height: 82vh;
+  overflow-x:hidden;
 }
 .messages {
   position: relative;
   overflow-y: scroll;
   height: 55vh;
   max-height: 55vh;
+  overflow-x:hidden;
 }
 
 .chip {
@@ -76,7 +78,7 @@
     background-color: cornflowerblue;
     font-weight: bold;
     margin-left: 12px;
-    transition-duration: 0.2s;
+    transition:all 0.2s ease;
   }
   &:active{
       background-color: orchid;
@@ -92,5 +94,5 @@
 }
 
 .selected {
-  background-color: #29f061;
+  background-color: #31c467;
 }

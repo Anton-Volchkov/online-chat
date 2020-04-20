@@ -4,4 +4,5 @@ export class Message {
   public fullNameSender: string;
   public dispatchTime: string;
   public textMessage: string;
+  public isRead:boolean;
 }

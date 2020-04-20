@@ -8,8 +8,10 @@ if (environment.production) {
   enableProdMode();
 }
 
+//https://localhost:5001 
+
 const providers = [
-  { provide: 'SERVER_URL', useFactory: ()=>"https://localhost:5001", deps: [] }
+  { provide: 'SERVER_URL', useFactory: ()=>"https://online-chat-server.herokuapp.com", deps: [] }
 ];
 
 platformBrowserDynamic(providers).bootstrapModule(AppModule)

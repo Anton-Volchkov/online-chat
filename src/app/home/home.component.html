@@ -8,7 +8,7 @@
                     (click)="ChangeList('Online')" mdbWavesEffect>
                     Онлайн
                 </button>
-                <button mdbBtn color="primary" class="hoverable" [gradient]="onlyOnlineUser?'aqua':'peach'"
+                <button mdbBtn color="primary" class="hoverable" id="test" [gradient]="onlyOnlineUser?'aqua':'peach'"
                     (click)="ChangeList('All')" mdbWavesEffect>
                     Все пользователи
                 </button>
@@ -20,23 +20,27 @@
 
             <mdb-card-body>
 
-                <div *ngIf="onlyOnlineUser; else elseBlock">
+                <div class="animated bounceIn" *ngIf="onlyOnlineUser; else elseBlock">
                     <p class="text-center" *ngIf="(currentOnlineUsers.length == 0)">
                         Никого не найдено!
                     </p>
-                    <div *ngFor="let user of currentOnlineUsers" (click)="setRecipient(user)" class="chip col-12"
+                    <div *ngFor="let user of currentOnlineUsers" (click)="setRecipient(user)" class="chip col-12 animated flipInX"
                         [ngClass]="{selected:user.userID == recipientUser.userID}">
                         <img [src]="user.imagePath" alt="Contact Person">
                         {{user.fullName}}
+                        <mdb-badge *ngIf="user.haveUnreadDialog" class="float-right" danger="true">New!</mdb-badge>
                     </div>
                 </div>
                 <ng-template #elseBlock>
+                  <div class="animated bounceIn">
                     <p class="text-center" *ngIf="(currentAllUsers.length == 0)">Никого не найдено!</p>
                     <div *ngFor="let user of currentAllUsers" (click)="setRecipient(user)" class="chip col-12"
                         [ngClass]="{selected:user.userID == recipientUser.userID}">
                         <img [src]="user.imagePath" alt="Contact Person">
                         {{user.fullName}}
+                        <mdb-badge *ngIf="user.haveUnreadDialog" class="float-right" danger="true">New!</mdb-badge>
                     </div>
+                  </div>
                 </ng-template>
 
             </mdb-card-body>
@@ -54,8 +58,10 @@
                         <img src="../../assets/Images/chatImage.png" *ngIf="true" style="width: 40vh;" alt="">
                     </div>
 
-                    <div *ngFor="let msg of Messages" class="alert alert-success col-7" role="alert"
-                        [ngClass]="{'offset-5':msg.senderID == currentUser.userID}">
+                    <div *ngFor="let msg of Messages" class="alert alert-success col-7 animated" role="alert"
+                        [ngClass]="{'offset-5':msg.senderID == currentUser.userID,
+                                    'bounceInRight':msg.senderID == currentUser.userID,
+                                     'bounceInLeft': msg.senderID == recipientUser.userID }">
 
                         <p style="font-size: 0.8em;">
                             {{msg.textMessage}}

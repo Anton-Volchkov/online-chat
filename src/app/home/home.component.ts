@@ -13,7 +13,6 @@ import { Message } from "../Models/Message";
 import { NgForm } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 
-
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -56,6 +55,7 @@ export class HomeComponent implements OnInit {
       this.allUsers = data;
       this.currentAllUsers = this.allUsers;
     });
+
   }
 
   private createConnection() {
@@ -110,9 +110,37 @@ export class HomeComponent implements OnInit {
         data.recipientID != this.currentUser.userID ||
         data.senderID != this.recipientUser.userID
       )
-        return;
+      {
+       var userOnline = this.onlineUsers.find(
+          (x) => x.userID == data.senderID
+        );
 
+        if(userOnline)
+        {
+          userOnline.haveUnreadDialog = true;
+        }
+
+        var userInAllList = this.allUsers.find(
+          (x) => x.userID == data.senderID
+        );
+
+        if(userInAllList)
+        {
+          userInAllList.haveUnreadDialog = true;
+        }
+
+        var audio = new Audio('../../assets/Sounds/new-msg.mp3'); // Создаём новый элемент Audio
+     
+        audio.play();
+         
+        return;
+      }
+
+    
       this.Messages.push(data);
+
+      console.log(data.senderID);
+      this._hubConnection.invoke("ReadDialog", this.recipientUser.userID);
 
       setTimeout(() => {
         let elem = document.getElementById("data");
@@ -122,8 +150,28 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  
   setRecipient(user: ChatUser) {
-    if(this.recipientUser == user) return;
+    if (this.recipientUser.userID == user.userID) return;
+
+    var userOnline = this.onlineUsers.find(
+      (x) => x.userID == user.userID
+    );
+
+    if(userOnline)
+    {
+      userOnline.haveUnreadDialog = false;
+    }
+
+    var userInAllList = this.allUsers.find(
+      (x) => x.userID == user.userID
+    );
+
+    if(userInAllList)
+    {
+      userInAllList.haveUnreadDialog = false;
+    }
+
     this.recipientUser = user;
     this.Messages = [];
     this.http
@@ -132,6 +180,8 @@ export class HomeComponent implements OnInit {
       )
       .subscribe((data) => {
         this.Messages = data;
+        
+        this._hubConnection.invoke("ReadDialog", user.userID);
         setTimeout(() => {
           let elem = document.getElementById("data");
 
@@ -200,7 +250,6 @@ export class HomeComponent implements OnInit {
     )).value.trim();
 
     if (filter != "") this.filterUsers(filter);
-
   }
 
   filterUsers(filterValue: string) {
@@ -215,7 +264,7 @@ export class HomeComponent implements OnInit {
       this.currentOnlineUsers = this.onlineUsers.filter(
         (x) => x.fullName.toLowerCase() == userName
       );
-    } else if(!this.onlyOnlineUser && this.allUsers.length > 0)  {
+    } else if (!this.onlyOnlineUser && this.allUsers.length > 0) {
       this.currentAllUsers = this.allUsers.filter(
         (x) => x.fullName.toLowerCase() == userName
       );
