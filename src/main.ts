@@ -9,9 +9,14 @@ if (environment.production) {
 }
 
 //https://localhost:5001 
+export function getBaseUrl() {
+  return document.getElementsByTagName('base')[0].href;
+}
+
 
 const providers = [
-  { provide: 'SERVER_URL', useFactory: ()=>"https://online-chat-server.herokuapp.com", deps: [] }
+  { provide: 'SERVER_URL', useFactory: ()=>"https://online-chat-server.herokuapp.com", deps: [] },
+  { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] }
 ];
 
 platformBrowserDynamic(providers).bootstrapModule(AppModule)

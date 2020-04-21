@@ -129,7 +129,7 @@ export class HomeComponent implements OnInit {
           userInAllList.haveUnreadDialog = true;
         }
 
-        var audio = new Audio('../../assets/Sounds/new-msg.mp3'); // Создаём новый элемент Audio
+        var audio = new Audio('/online-chat/assets/Sounds/new-msg.mp3'); // Создаём новый элемент Audio
      
         audio.play();
          
@@ -139,8 +139,7 @@ export class HomeComponent implements OnInit {
     
       this.Messages.push(data);
 
-      console.log(data.senderID);
-      this._hubConnection.invoke("ReadDialog", this.recipientUser.userID);
+      this._hubConnection.invoke("ReadDialog", data.senderID);
 
       setTimeout(() => {
         let elem = document.getElementById("data");

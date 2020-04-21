@@ -24,23 +24,23 @@
                     <p class="text-center" *ngIf="(currentOnlineUsers.length == 0)">
                         Никого не найдено!
                     </p>
-                    <div *ngFor="let user of currentOnlineUsers" (click)="setRecipient(user)" class="chip col-12 animated flipInX"
-                        [ngClass]="{selected:user.userID == recipientUser.userID}">
+                    <div *ngFor="let user of currentOnlineUsers" (click)="setRecipient(user)"
+                        class="chip col-12 animated flipInX" [ngClass]="{selected:user.userID == recipientUser.userID}">
                         <img [src]="user.imagePath" alt="Contact Person">
                         {{user.fullName}}
                         <mdb-badge *ngIf="user.haveUnreadDialog" class="float-right" danger="true">New!</mdb-badge>
                     </div>
                 </div>
                 <ng-template #elseBlock>
-                  <div class="animated bounceIn">
-                    <p class="text-center" *ngIf="(currentAllUsers.length == 0)">Никого не найдено!</p>
-                    <div *ngFor="let user of currentAllUsers" (click)="setRecipient(user)" class="chip col-12"
-                        [ngClass]="{selected:user.userID == recipientUser.userID}">
-                        <img [src]="user.imagePath" alt="Contact Person">
-                        {{user.fullName}}
-                        <mdb-badge *ngIf="user.haveUnreadDialog" class="float-right" danger="true">New!</mdb-badge>
+                    <div class="animated bounceIn">
+                        <p class="text-center" *ngIf="(currentAllUsers.length == 0)">Никого не найдено!</p>
+                        <div *ngFor="let user of currentAllUsers" (click)="setRecipient(user)" class="chip col-12"
+                            [ngClass]="{selected:user.userID == recipientUser.userID}">
+                            <img [src]="user.imagePath">
+                            {{user.fullName}}
+                            <mdb-badge *ngIf="user.haveUnreadDialog" class="float-right" danger="true">New!</mdb-badge>
+                        </div>
                     </div>
-                  </div>
                 </ng-template>
 
             </mdb-card-body>
@@ -55,11 +55,16 @@
                     <div *ngIf="(!recipientUser.userID) " class="text-center">
                         <h2>Выберите Чат</h2>
                         <br>
-                        <img src="../../assets/Images/chatImage.png" *ngIf="true" style="width: 40vh;" alt="">
+                        <img src="/online-chat/assets/Images/chatImage.png" *ngIf="true" style="width: 40vh;" alt="">
                     </div>
-
-                    <div *ngFor="let msg of Messages" class="alert alert-success col-7 animated" role="alert"
-                        [ngClass]="{'offset-5':msg.senderID == currentUser.userID,
+                    <div *ngIf="Messages.length == 0 && recipientUser.userID" class="text-center">
+                      <h3>
+                        Вы еще не общались с этим пользователем!
+                        Начните диалог первый!
+                      </h3>
+                    
+                    </div>
+                    <div *ngFor="let msg of Messages" class="alert alert-success col-7 animated" role="alert" [ngClass]="{'offset-5':msg.senderID == currentUser.userID,
                                     'bounceInRight':msg.senderID == currentUser.userID,
                                      'bounceInLeft': msg.senderID == recipientUser.userID }">
 
