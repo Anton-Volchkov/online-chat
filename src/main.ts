@@ -13,9 +13,19 @@ export function getBaseUrl() {
   return document.getElementsByTagName('base')[0].href;
 }
 
+export function getServerUrl()
+{
+  if (environment.production) {
+    return "https://online-chat-server.herokuapp.com";
+  }
+  else
+  {
+    return "https://localhost:44367"
+  }
+}
 
 const providers = [
-  { provide: 'SERVER_URL', useFactory: ()=>"https://online-chat-server.herokuapp.com", deps: [] },
+  { provide: 'SERVER_URL', useFactory: getServerUrl, deps: [] },
   { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] }
 ];
 

@@ -63,6 +63,12 @@ export class UserService {
     );
   }
 
+  GetChatUserInfo(userID: string) {
+    return this.http.get<ChatUser>(
+      this.serverUrl + "/User/GetChatUserInfo/" + userID
+    );
+  }
+
   GetAllUsersInfo() {
     return this.http.get<ChatUser[]>(this.serverUrl + "/User/GetAllUsersInfo");
   }

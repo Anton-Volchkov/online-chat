@@ -4,4 +4,6 @@ export class ChatUser
     public  fullName:string; 
     public imagePath:string;
     public haveUnreadDialog:boolean;
+    public canWriteMessage: boolean;
+    public isBlocked: boolean;
 }

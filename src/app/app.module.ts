@@ -23,6 +23,7 @@ import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './Auth/auth.guard';
 import { AuthInterceptor } from './Auth/auth.interceptor';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
+import {MatMenuModule} from '@angular/material/menu';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
  
@@ -34,6 +35,7 @@ import { ToastrModule } from 'ngx-toastr';
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     BrowserModule,
+    MatMenuModule,
     CheckboxModule,
     WavesModule,
     ButtonsModule,

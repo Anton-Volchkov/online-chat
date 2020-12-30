@@ -24,8 +24,8 @@
                     <p class="text-center" *ngIf="(currentOnlineUsers.length == 0)">
                         Никого не найдено!
                     </p>
-                    <div *ngFor="let user of currentOnlineUsers" (click)="setRecipient(user)"
-                        class="chip col-12 animated flipInX" [ngClass]="{selected:user.userID == recipientUser.userID}">
+                    <div *ngFor="let user of currentOnlineUsers" (contextmenu)="setCords($event, user.userID);" (click)="setRecipient(user)"
+                        class="chip col-12 animated flipInX" [ngClass]="{selected:recipientUser && user.userID == recipientUser.userID}">
                         <img [src]="user.imagePath" alt="Contact Person">
                         {{user.fullName}}
                         <mdb-badge *ngIf="user.haveUnreadDialog" class="float-right" danger="true">New!</mdb-badge>
@@ -34,14 +34,32 @@
                 <ng-template #elseBlock>
                     <div class="animated bounceIn">
                         <p class="text-center" *ngIf="(currentAllUsers.length == 0)">Никого не найдено!</p>
-                        <div *ngFor="let user of currentAllUsers" (click)="setRecipient(user)" class="chip col-12"
-                            [ngClass]="{selected:user.userID == recipientUser.userID}">
+                        <div *ngFor="let user of currentAllUsers" (contextmenu)="setCords($event, user.userID);"
+                            (click)="setRecipient(user)" class="chip col-12"
+                            [ngClass]="{selected:user.userID == recipientUser && recipientUser.userID}">
                             <img [src]="user.imagePath">
                             {{user.fullName}}
                             <mdb-badge *ngIf="user.haveUnreadDialog" class="float-right" danger="true">New!</mdb-badge>
                         </div>
+
                     </div>
                 </ng-template>
+
+
+                <button class="menu-trigger" [style.left]="clientX" [style.top]="clientY" mat-button
+                    #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="menu">
+
+                </button>
+
+                <div>
+                    <mat-menu #menu="matMenu">
+                        <ng-template matMenuContent let-userId="userId" let-isBlocked="isBlocked">
+                            <button *ngIf="!isBlocked" (click)="blockUser(userId)" mat-menu-item>Заблокировать пользователя</button>
+                            <button *ngIf="isBlocked" (click)="unblockUser(userId)" mat-menu-item>Разблокировать пользователя</button>
+                        </ng-template>
+                    </mat-menu>
+                </div>
+
 
             </mdb-card-body>
         </mdb-card>
@@ -52,17 +70,23 @@
         <div>
             <mdb-card id="data" class="messages scrollbar-dusty-grass">
                 <mdb-card-body class="force-overflow">
-                    <div *ngIf="(!recipientUser.userID) " class="text-center">
+                    <div *ngIf="!recipientUser" class="text-center">
                         <h2>Выберите Чат</h2>
                         <br>
-                        <img src="/online-chat/assets/Images/chatImage.png" *ngIf="true" style="width: 40vh;" alt="">
+                        <img [src]="chatImage"  style="width: 40vh;" alt="">
                     </div>
-                    <div *ngIf="Messages.length == 0 && recipientUser.userID" class="text-center">
-                      <h3>
-                        Вы еще не общались с этим пользователем!
-                        Начните диалог первый!
-                      </h3>
-                    
+                    <div *ngIf="recipientUser && Messages.length == 0 && recipientUser.userID && dataLoaded"
+                        class="text-center">
+                        <h3>
+                            Вы еще не общались с этим пользователем!
+                            Начните диалог первый!
+                        </h3>
+                    </div>
+                    <div class="h-100 d-flex justify-content-center align-items-center"
+                        *ngIf="!dataLoaded && recipientUser && recipientUser.userID">
+                        <div class="spinner-border text-secondary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                     <div *ngFor="let msg of Messages" class="alert alert-success col-7 animated" role="alert" [ngClass]="{'offset-5':msg.senderID == currentUser.userID,
                                     'bounceInRight':msg.senderID == currentUser.userID,
@@ -78,17 +102,30 @@
                 </mdb-card-body>
             </mdb-card>
 
-            <form #form="ngForm" (ngSubmit)="sendMessage(form)">
-                <div class="md-form">
-                    <textarea name="message" (keydown.enter)="sendMessage(form)" [disabled]="(!recipientUser.userID)"
-                        ngModel required type="text" id="areaMessage" class="md-textarea md-textarea-auto form-control"
-                        mdbInput></textarea>
-                    <label for="form7">Сообщение</label>
-                </div>
-                <button mdbBtn type="submit" color="default" [disabled]="(!recipientUser.userID) || !form.valid"
-                    block="true" mdbWavesEffect>Отправить сообщение</button>
+            <div *ngIf="recipientUser && recipientUser.canWriteMessage">
+                <form *ngIf="recipientUser && recipientUser.userID" #form="ngForm" (ngSubmit)="sendMessage(form)">
+                    <div class="md-form">
+                        <textarea name="message" (keydown.enter)="sendMessage(form)"
+                            [disabled]="(!recipientUser.userID)" ngModel required type="text" id="areaMessage"
+                            class="md-textarea md-textarea-auto form-control" mdbInput></textarea>
+                        <label for="form7">Сообщение</label>
+                    </div>
+                    <button mdbBtn type="submit" color="default" [disabled]="(!recipientUser.userID) || !form.valid"
+                        block="true" mdbWavesEffect>Отправить сообщение</button>
 
-            </form>
+                </form>
+            </div>
+
+            <div class="h-100 d-flex justify-content-center align-items-center text-center mt-4">
+                <div *ngIf="recipientUser && !recipientUser.canWriteMessage && recipientUser.isBlocked">
+                    Вы не можете писать сообщения этому пользователю, поскольку он находится у Вас в чёрном списке.
+                </div>
+                <div *ngIf="recipientUser && !recipientUser.canWriteMessage && !recipientUser.isBlocked">
+                    Вы не можете писать сообщения этому пользователю, поскольку он ограничил круг лиц, которые могут присылать ему сообщения.
+                </div>
+            </div>
+         
+
         </div>
     </div>
 </div>

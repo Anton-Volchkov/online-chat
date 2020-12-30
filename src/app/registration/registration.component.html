@@ -47,7 +47,7 @@
             пароль слишком короткий!</label>
         <br>
         <input type="password" (keypress)="CheckOnWhiteSpace($event)" id="ConfirmPassword" formControlName="ConfirmPassword" class="form-control"
-            placeholder="Пароль" aria-describedby="defaultRegisterFormPasswordHelpBlock">
+            placeholder="Повторите пароль" aria-describedby="defaultRegisterFormPasswordHelpBlock">
         <label class="text-danger"
             *ngIf="formModel.get('Passwords.ConfirmPassword').touched && formModel.get('Passwords.ConfirmPassword').errors?.required">Вы
             не ввели Пароль!</label>
