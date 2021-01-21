@@ -15,6 +15,8 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from "src/environments/environment";
 import { MatMenuTrigger } from "@angular/material/menu";
 import { BlackListDataModel } from "../Models/BlackListDataModel";
+import { from } from "rxjs";
+import { mergeMap, toArray } from "rxjs/operators";
 
 @Component({
   selector: "app-home",
@@ -210,17 +212,16 @@ export class HomeComponent implements OnInit {
         }
       }
 
-      this.onlineUsers = data;
-
-      this.onlineUsers.map(x => {
-        this.service.GetChatUserInfo(x.userID).subscribe(data => {
-          x = data;
+      from(data).
+      pipe(
+        mergeMap(param => this.service.GetChatUserInfo(param.userID)),
+        toArray())
+      .subscribe(data =>
+        {
+          this.onlineUsers = data;
+          this.currentOnlineUsers = this.onlineUsers;
         })
-      });
-
-      this.currentOnlineUsers = this.onlineUsers;
-
-    
+  
    
       var filter = (<HTMLInputElement>(
         document.getElementById("FilterUserName")
