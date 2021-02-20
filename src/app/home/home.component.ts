@@ -27,6 +27,9 @@ export class HomeComponent implements OnInit {
   @ViewChild(MatMenuTrigger)
   contextMenu: MatMenuTrigger;
 
+  @ViewChild("messageContext")
+  messageContext: MatMenuTrigger;
+
   public currentUser: UserProfile;
 
   private onlineUsers: ChatUser[] = [];
@@ -108,7 +111,6 @@ export class HomeComponent implements OnInit {
     this._hubConnection.on("UnblockUser", (data: BlackListDataModel) => {
       if (this.currentUser.userID === data.userId) {
         this.service.GetChatUserInfo(data.blockUserId).subscribe((chatUser) => {
-
           let unblockUserInAllUsers = this.allUsers.find(
             (x) => x.userID == data.blockUserId
           );
@@ -118,7 +120,6 @@ export class HomeComponent implements OnInit {
             unblockUserInAllUsers.isBlocked = chatUser.isBlocked;
           }
 
-  
           let unblockUserInOnlineUsers = this.onlineUsers.find(
             (x) => x.userID === data.blockUserId
           );
@@ -132,7 +133,6 @@ export class HomeComponent implements OnInit {
 
       if (this.currentUser.userID === data.blockUserId) {
         this.service.GetChatUserInfo(data.userId).subscribe((chatUser) => {
-          
           let unblockUserInAllUsers = this.allUsers.find(
             (x) => x.userID === data.userId
           );
@@ -157,7 +157,6 @@ export class HomeComponent implements OnInit {
     this._hubConnection.on("BlockUser", (data: BlackListDataModel) => {
       if (this.currentUser.userID === data.userId) {
         this.service.GetChatUserInfo(data.blockUserId).subscribe((chatUser) => {
-         
           let unblockUserInAllUsers = this.allUsers.find(
             (x) => x.userID === data.blockUserId
           );
@@ -179,9 +178,7 @@ export class HomeComponent implements OnInit {
       }
 
       if (this.currentUser.userID === data.blockUserId) {
-        
         this.service.GetChatUserInfo(data.userId).subscribe((chatUser) => {
-          
           let unblockUserInAllUsers = this.allUsers.find(
             (x) => x.userID === data.userId
           );
@@ -212,28 +209,44 @@ export class HomeComponent implements OnInit {
         }
       }
 
-      from(data).
-      pipe(
-        mergeMap(param => this.service.GetChatUserInfo(param.userID)),
-        toArray())
-      .subscribe(data =>
-        {
+      from(data)
+        .pipe(
+          mergeMap((param) => this.service.GetChatUserInfo(param.userID)),
+          toArray()
+        )
+        .subscribe((data) => {
           this.onlineUsers = data;
           this.currentOnlineUsers = this.onlineUsers;
-        })
-  
-   
+        });
+
       var filter = (<HTMLInputElement>(
         document.getElementById("FilterUserName")
       )).value.trim();
 
       if (filter != "" && this.onlyOnlineUser) this.filterUsers(filter);
     });
+    
+
+    this._hubConnection.on("MessageDeleted", (msgId: number) => {
+     this.Messages = this.Messages.filter(x=> x.id !== msgId);
+    });
 
     this._hubConnection.on("NewMessage", (data: Message) => {
-      if (!this.recipientUser ||
+      if(data.senderID === this.currentUser.userID)
+      {
+        this.Messages.push(data);
+        setTimeout(() => {
+          let elem = document.getElementById("data");
+    
+          elem.scrollTop = elem.scrollHeight;
+        }, 1);
+        return;
+      }
+
+      if (
+        !this.recipientUser ||
         data.recipientID != this.currentUser.userID ||
-        data.senderID != this.recipientUser.userID 
+        data.senderID != this.recipientUser.userID
       ) {
         var userOnline = this.onlineUsers.find(
           (x) => x.userID == data.senderID
@@ -271,7 +284,6 @@ export class HomeComponent implements OnInit {
   }
 
   setRecipient(user: ChatUser) {
-   
     if (this.recipientUser && this.recipientUser.userID == user.userID) return;
     this.recipientUser = user;
 
@@ -314,31 +326,15 @@ export class HomeComponent implements OnInit {
       form.reset();
       return;
     }
-    var date = this.getDate();
-
-    var msg = new Message();
-    msg.senderID = this.currentUser.userID;
-    msg.recipientID = this.recipientUser.userID;
-    msg.fullNameSender = this.currentUser.fullName;
-    msg.textMessage = formValue.message;
-    msg.dispatchTime = date;
 
     form.reset();
     document.getElementById("areaMessage").focus();
 
-    this.Messages.push(msg);
-
     this._hubConnection.invoke(
       "SendMessage",
       this.recipientUser.userID,
-      msg.textMessage
+      formValue.message
     );
-
-    setTimeout(() => {
-      let elem = document.getElementById("data");
-
-      elem.scrollTop = elem.scrollHeight;
-    }, 1);
   }
 
   getDate(): string {
@@ -403,6 +399,28 @@ export class HomeComponent implements OnInit {
     };
 
     this.contextMenu.openMenu();
+  }
+
+  public showMessagesContextMenu(event, msg: Message) {
+    event.preventDefault();
+
+    if(msg.senderID !== this.currentUser.userID)
+    {
+      return;
+    }
+
+    this.clientY = event.clientY + "px";
+    this.clientX = event.clientX + "px";
+
+    this.messageContext.menuData = {
+      msgId: msg.id,
+    };
+
+    this.messageContext.openMenu();
+  }
+
+  public deleteMessage(msgId: number) {
+    this._hubConnection.invoke("RemoveMessage", msgId);
   }
 
   public unblockUser(userId: string) {

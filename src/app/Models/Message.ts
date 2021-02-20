@@ -1,4 +1,5 @@
 export class Message {
+  public id: number;
   public recipientID: string;
   public senderID: string;
   public fullNameSender: string;

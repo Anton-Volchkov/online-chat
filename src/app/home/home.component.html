@@ -24,8 +24,9 @@
                     <p class="text-center" *ngIf="(currentOnlineUsers.length == 0)">
                         Никого не найдено!
                     </p>
-                    <div *ngFor="let user of currentOnlineUsers" (contextmenu)="setCords($event, user.userID);" (click)="setRecipient(user)"
-                        class="chip col-12 animated flipInX" [ngClass]="{selected:recipientUser && user.userID == recipientUser.userID}">
+                    <div *ngFor="let user of currentOnlineUsers" (contextmenu)="setCords($event, user.userID);"
+                        (click)="setRecipient(user)" class="chip col-12 animated flipInX"
+                        [ngClass]="{selected:recipientUser && user.userID == recipientUser.userID}">
                         <img [src]="user.imagePath" alt="Contact Person">
                         {{user.fullName}}
                         <mdb-badge *ngIf="user.haveUnreadDialog" class="float-right" danger="true">New!</mdb-badge>
@@ -54,8 +55,10 @@
                 <div>
                     <mat-menu #menu="matMenu">
                         <ng-template matMenuContent let-userId="userId" let-isBlocked="isBlocked">
-                            <button *ngIf="!isBlocked" (click)="blockUser(userId)" mat-menu-item>Заблокировать пользователя</button>
-                            <button *ngIf="isBlocked" (click)="unblockUser(userId)" mat-menu-item>Разблокировать пользователя</button>
+                            <button *ngIf="!isBlocked" (click)="blockUser(userId)" mat-menu-item>Заблокировать
+                                пользователя</button>
+                            <button *ngIf="isBlocked" (click)="unblockUser(userId)" mat-menu-item>Разблокировать
+                                пользователя</button>
                         </ng-template>
                     </mat-menu>
                 </div>
@@ -73,7 +76,7 @@
                     <div *ngIf="!recipientUser" class="text-center">
                         <h2>Выберите Чат</h2>
                         <br>
-                        <img [src]="chatImage"  style="width: 40vh;" alt="">
+                        <img [src]="chatImage" style="width: 40vh;" alt="">
                     </div>
                     <div *ngIf="recipientUser && Messages.length == 0 && recipientUser.userID && dataLoaded"
                         class="text-center">
@@ -90,13 +93,28 @@
                     </div>
                     <div *ngFor="let msg of Messages" class="alert alert-success col-7 animated" role="alert" [ngClass]="{'offset-5':msg.senderID == currentUser.userID,
                                     'bounceInRight':msg.senderID == currentUser.userID,
-                                     'bounceInLeft': msg.senderID == recipientUser.userID }">
+                                     'bounceInLeft': msg.senderID == recipientUser.userID }"
+                        (contextmenu)="showMessagesContextMenu($event, msg);">
 
                         <p style="font-size: 0.8em;">
                             {{msg.textMessage}}
                         </p>
                         <hr>
                         <small style="font-size: 0.7em;"><em>{{msg.fullNameSender}}, {{msg.dispatchTime}}</em></small>
+                    </div>
+
+                    <button class="menu-trigger" [style.left]="clientX" [style.top]="clientY" mat-button
+                        #messageContext="matMenuTrigger" [matMenuTriggerFor]="messageContextMenu">
+
+                    </button>
+
+                    <div>
+                        <mat-menu #messageContextMenu="matMenu">
+                            <ng-template matMenuContent let-msgId="msgId">
+                                <button (click)="deleteMessage(msgId)" mat-menu-item>Удалить сообщение</button>
+                             
+                            </ng-template>
+                        </mat-menu>
                     </div>
 
                 </mdb-card-body>
@@ -121,10 +139,11 @@
                     Вы не можете писать сообщения этому пользователю, поскольку он находится у Вас в чёрном списке.
                 </div>
                 <div *ngIf="recipientUser && !recipientUser.canWriteMessage && !recipientUser.isBlocked">
-                    Вы не можете писать сообщения этому пользователю, поскольку он ограничил круг лиц, которые могут присылать ему сообщения.
+                    Вы не можете писать сообщения этому пользователю, поскольку он ограничил круг лиц, которые могут
+                    присылать ему сообщения.
                 </div>
             </div>
-         
+
 
         </div>
     </div>
