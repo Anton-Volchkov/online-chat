@@ -225,19 +225,21 @@ export class HomeComponent implements OnInit {
 
       if (filter != "" && this.onlyOnlineUser) this.filterUsers(filter);
     });
-    
 
     this._hubConnection.on("MessageDeleted", (msgId: number) => {
-     this.Messages = this.Messages.filter(x=> x.id !== msgId);
+      this.Messages = this.Messages.filter((x) => x.id !== msgId);
     });
 
     this._hubConnection.on("NewMessage", (data: Message) => {
-      if(data.senderID === this.currentUser.userID)
-      {
+      if (
+        this.recipientUser &&
+        this.recipientUser.userID === data.recipientID &&
+        data.senderID === this.currentUser.userID
+      ) {
         this.Messages.push(data);
         setTimeout(() => {
           let elem = document.getElementById("data");
-    
+
           elem.scrollTop = elem.scrollHeight;
         }, 1);
         return;
@@ -404,8 +406,7 @@ export class HomeComponent implements OnInit {
   public showMessagesContextMenu(event, msg: Message) {
     event.preventDefault();
 
-    if(msg.senderID !== this.currentUser.userID)
-    {
+    if (msg.senderID !== this.currentUser.userID) {
       return;
     }
 
