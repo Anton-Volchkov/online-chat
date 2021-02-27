@@ -37,7 +37,7 @@
                         <p class="text-center" *ngIf="(currentAllUsers.length == 0)">Никого не найдено!</p>
                         <div *ngFor="let user of currentAllUsers" (contextmenu)="setCords($event, user.userID);"
                             (click)="setRecipient(user)" class="chip col-12"
-                            [ngClass]="{selected:user.userID == recipientUser && recipientUser.userID}">
+                            [ngClass]="{selected:recipientUser && user.userID == recipientUser.userID}">
                             <img [src]="user.imagePath">
                             {{user.fullName}}
                             <mdb-badge *ngIf="user.haveUnreadDialog" class="float-right" danger="true">New!</mdb-badge>
